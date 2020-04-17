@@ -10,24 +10,27 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&display=swap">
     <link rel="stylesheet" type="text/css" href= "css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href= "css/mdb.min.css"/>
-    <link rel="stylesheet" type="text/css" href= "css/addons/datatables.min.css"/>
     <link rel="stylesheet" type="text/css" href= "css/style.css"/>
 </head>
 <body>
     <header>
         <div class="elegant-color-dark text-white">
-            <h3>BAGUIO CITY COVID-19 (βeta)</h3>
+            <h3>BAGUIO CITY COVID-19 Dashboard</h3>
         </div>
     </header>
     <main>
         <div class="card" id="cardbg">
             <div class="card-body">
+                <div class="my-4">
+                    <small><b>Select Month & Year</b></small>
+                    <select class="browser-default custom-select" id="moyeSelect"></select>
+                </div>
                 <h5 id="current-update"></h5>
-                <div class="row mt-2 mb-4">
-                    <div class="col col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 my-2">
+                <div class="row mb-4">
+                    <div class="col col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 my-2">
                         <div class="card">
                             <div class="card-body text-center">
-                                <h1 class="my-0 deep-orange-text count" id="posCount"></h1>
+                                <h1 class="my-0 deep-orange-text count posCount"></h1>
                                 <h5 class="my-0 text-muted">Positive</h5>
                             </div>
                         </div>
@@ -35,7 +38,7 @@
                     <div class="col col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 my-2">
                         <div class="card">
                             <div class="card-body text-center">
-                                <h1 class="my-0 text-danger count" id="decCount"></h1>
+                                <h1 class="my-0 text-danger count decCount"></h1>
                                 <h5 class="my-0 text-muted">Deceased</h5>
                             </div>
                         </div>
@@ -43,16 +46,16 @@
                     <div class="col col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 my-2">
                         <div class="card">
                             <div class="card-body text-center">
-                                <h1 class="my-0 text-primary count" id="negCount"></h1>
-                                <h5 class="my-0 text-muted">Tested Negative</h5>
+                                <h1 class="my-0 text-success count recCount"></h1>
+                                <h5 class="my-0 text-muted">Recovered</h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 my-2">
+                    <div class="col col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 my-2">
                         <div class="card">
                             <div class="card-body text-center">
-                                <h1 class="my-0 text-success count" id="recCount"></h1>
-                                <h5 class="my-0 text-muted">Recovered</h5>
+                                <h1 class="my-0 text-primary count negCount"></h1>
+                                <h5 class="my-0 text-muted">Tested Negative</h5>
                             </div>
                         </div>
                     </div>
@@ -60,7 +63,7 @@
                         <div class="card">
                             <a href="javascript:void(0)" id="viewMoreBtn">
                             <div class="card-body text-center elegant-color text-white py-1">
-                                <span>Click To View More (To Be Fixed)</span>
+                                <span><i class="far fa-eye mr-2"></i>View More Latest Information</span>
                             </div>
                             </a>
                         </div>
@@ -68,35 +71,93 @@
                 </div>
                 <div class="row justify-content-center text-center">
                     <div class="col col-xl-9 col-lg-10">
-                        <h4>Active and Recovered PUIs</h4>
+                        <h4>Confirmed and Probable Cases</h4>
                         <canvas id="prdp-chart" height="100px"></canvas>
                     </div>
                 </div>
                 <div class="row text-center my-5">
                     <div class="col col-xl-6 col-lg-6">
-                        <h4 class="m-0">Active and Recovered PUIs</h4>
+                        <h4 class="m-0">Persons Under Investigation (PUI)</h4>
                         <small>PUI: Admitted in Hospital + Home Isolation</small>
                         <canvas id="pui-chart" height="80px"></canvas>
                     </div>
                     <div class="col col-xl-6 col-lg-6">
-                        <h4>PUMs Under and Completed 14 Day Quarantine</h4>
+                        <h4 class="m-0">Persons Under Monitoring (PUM)</h4>
+                        <small>PUM: Under 14-Day Quarantine</small>
                         <canvas id="pum-chart" height="80px"></canvas>
                     </div>
                 </div>
                 <div class="row justify-content-center text-center">
                     <div class="col col-xl-9 col-lg-10">
-                        <h4>Non-COVID Cases</h4>
+                        <h4 class="m-0">Non-COVID Cases</h4>
+                        <small>PUM: Completed 14-Day Quarantine</small>
                         <canvas id="pumok-chart" height="48px"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
+<div class="modal fade" id="viewMore" tabindex="-1" role="dialog" aria-labelledby="viewMoreModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-frame modal-top modal-fluid modal-dialog-scrollable" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h6 class="modal-title w-100" id="viewMoreModalLabel"><b>More Information</b></h6>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body font-weight-bold">
+        <ul class="list-group list-group-horizontal flex-wrap mb-4">
+            <li class="list-group-item flex-fill">Positive: <span class="count posCount deep-orange-text"></span></li>
+            <li class="list-group-item flex-fill">Probable: <span class="count probCount brown-text"></span></li>
+            <li class="list-group-item flex-fill">PUM Under Quarantine: <span class="count pumUnderCount brown-text"></span></li>
+            <li class="list-group-item flex-fill">PUI Active: <span class="count puiActCount text-secondary"></span></li>
+            <li class="list-group-item flex-fill">Recovered: <span class="count recCount text-success"></span></li>
+            <li class="list-group-item flex-fill">PUI Recovered: <span class="count puiRecCount text-success"></span></li>
+            <li class="list-group-item flex-fill">PUM Completed Quarantine: <span class="count pumOkayCount text-primary"></span></li>
+            <li class="list-group-item flex-fill">Tested Negative: <span class="count negCount text-primary"></span></li>
+            <li class="list-group-item flex-fill">Deceased: <span class="count decCount text-danger"></span></li>
+        </ul>
+        <div class="row mb-4 text-center">
+            <div class="col col-12 col-xl-6 col-lg-6 col-md-6">
+                <canvas id="gen-chart" height="50px"></canvas>
+                <small>Confirmed Cases By Gender</small>
+            </div>
+            <div class="col col-12 col-xl-6 col-lg-6 col-md-6">
+                <canvas id="age-chart" height="50px"></canvas>
+                <small>Confirmed Cases By Age Group</small>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header elegant-color text-white"><span class="badge badge-primary badge-pill posTotal">0</span> Positive Cases</div>
+            <ul class="list-group list-group-flush" id="posCases">
+                <li class="list-group-item text-center text-muted">No Data</li>
+            </ul>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header elegant-color text-white"><span class="badge badge-primary badge-pill recTotal">0</span> Recovered Cases</div>
+            <ul class="list-group list-group-flush" id="recCases">
+                <li class="list-group-item text-center text-muted">No Data</li>
+            </ul>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header elegant-color text-white"><span class="badge badge-primary badge-pill decTotal">0</span> Death Cases</div>
+            <ul class="list-group list-group-flush" id="decCases">
+                <li class="list-group-item text-center text-muted">No Data</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="modal-footer"><button type="button" class="btn elegant-color text-white btn-block" data-dismiss="modal">Close</button></div>
+  </div>
+</div>
+</div>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/popper.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/mdb.min.js"></script>
-    <script src="js/addons/datatables.min.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/script.js" async></script>
 </body>
 </html>
